@@ -62,8 +62,8 @@ def storage_con(data_ver, c_code, descript):
     # connection to confluence credentials
     confluence = Confluence(
     url = 'https://confluence.tomtomgroup.com/',
-    username='mavimbel',
-    password = 'mavimbela1992'
+    username=str(os.getenv("user_name"))
+    password = str(os.getenv("pass_code"))
     )
     htmlstring = ""
     status=confluence.append_page(

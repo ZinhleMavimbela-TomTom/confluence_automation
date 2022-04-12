@@ -67,8 +67,8 @@ def storage_con(data_ver, c_code, descript):
     )
     htmlstring = ""
     status=confluence.append_page(
-    page_id = confluence.get_page_id(space="MTC", title="1090 Release Notes (2022.03)"),
-    title = "1090 Release Notes (2022.03)", 
+    page_id = confluence.get_page_id(space=str(os.getenv("space")), title=str(os.getenv("title"))),
+    title = str(os.getenv("title")), 
     append_body =htmlstring +"<h5>{}</h5>{}".format(c_code,descript)
    
     )

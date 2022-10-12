@@ -126,8 +126,8 @@ def pulling_data():
                 del country_descrip
 
             # remove introduction and general from both country names and the descriptions
-            del country_names[:2]
-            del descriptions[:2]
+            del country_names[:1]
+            del descriptions[:1]
 
             # find the ISO codes based on the country name
             iso_codes = []
@@ -174,7 +174,7 @@ print("Total Country Count: ", len(country_isocode_description))
 
 if (len(unmatched_countries) == 0):
     print("Pushing to Database")
-    #pushing_data()
+    pushing_data()
 else:
     print("ERROR: These countries have no match in the csv file, please update csv file firstly and run again: ")
     for unmatch in unmatched_countries:

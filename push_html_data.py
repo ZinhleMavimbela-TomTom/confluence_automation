@@ -13,7 +13,7 @@ region =str(os.getenv("regions"))
 version =str(os.getenv("version"))
 
 
-csvfilepath = 'country_names.csv'
+csvfilepath = 'country_name.csv'
 # local container for country name and description
 country_isocode_description = []
 

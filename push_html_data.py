@@ -11,7 +11,9 @@ import json
 
 region =str(os.getenv("regions"))
 version =str(os.getenv("version"))
-
+remove_keyword= str(os.getenv("Remove_Word"))
+change_from = str(os.getenv("Change_parameter1"))
+change_to = str(os.getenv("Change_parameter2"))
 
 csvfilepath = 'country_name.csv'
 # local container for country name and description
@@ -86,9 +88,21 @@ def matching_country_code(name):
                 if re.search(row[1], name):
                     return row[0]
 
+# function to match the country name with the ISO code from the country_names csv file
+def matching_country_code(name):
+    with open(csvfilepath, 'r') as csvfile:
+        datareader = csv.reader(csvfile)
+        next(datareader)
+        for row in datareader:
+            if row[1] == name:
+                return row[0]
+            else:
+                if re.search(row[1], name):
+                    return row[0]
+
 # main function to read the HTML file and parse through and extract the country name and the country description
 def pulling_data():
-    file_list = f'/share/nds-sources/products/commercial/{region}{version}/documentation/mn/release_notes/release_notes/whats_new/'
+    file_list = f'/home/mavimbel/parse_highlight/highlights/lastest'
     pattern = f'highlights_and_improvements_mn_{region}_{version}.html'
     
     with open(os.path.join(file_list, pattern), 'r') as html_file:
@@ -109,7 +123,6 @@ def pulling_data():
 
             # descriptions have the ul tag in the HTML file
             description_tags = soup.find_all('ul')
-
             descriptions = []
             for d in description_tags:
                 result = d.find_all("li")
@@ -120,6 +133,18 @@ def pulling_data():
                     sanitize = re.sub(r"[\n\t]*", "", sanitize)
                     sanitize = re.sub(' +', " ", sanitize)
                     sanitize =re.sub('\xa0',"",sanitize)
+                    if ((len(remove_keyword))!=0):
+                        split_remove =remove_keyword.split(",")
+                        for i in range(len(split_remove)):
+                            sanitize=re.sub(split_remove[i], "",sanitize)
+                    if ((len(change_from)!=0) and (len(change_to)!=0)):
+                        #splits the change parameter 1 and change parameter 2 if there are multiple parameters 
+                        split_change_to = change_to.split(",")
+                        split_change_from = change_from.split(",")
+                        #loops through the str array with divided words and does replacement by mapping the words 
+                        #for example "Approximately" updated to "change" therefore split_change_to[0] maps to split_change_to[0]
+                        for m,j in zip(range(len(split_change_to)),range(len(split_change_from))):
+                            sanitize=re.sub(split_change_from[m],split_change_to[j],sanitize)
                     sanitize = sanitize.strip()
                     country_descrip.append(sanitize)
                 descriptions.append(country_descrip)
@@ -165,15 +190,17 @@ def pushing_data():
         if count==0:
             assign_region=region_convert()
             country.name ="<h3>"+assign_region+"</h3><br></br>"+"<h5>"+country.name+"</h5>"
+        #print to check what is being sent to confluence
+        print(country.data_ver + " " + country.name + " " + one_country_description_as_string)
         storage_con(country.data_ver, country.name, one_country_description_as_string)
         count=count+1
         one_country_description_as_string = ""
 
 pulling_data()
 print("Total Country Count: ", len(country_isocode_description))
-
+print_all()
 if (len(unmatched_countries) == 0):
-    print("Pushing to Database")
+    print("Pushing to Confluence Page")
     pushing_data()
 else:
     print("ERROR: These countries have no match in the csv file, please update csv file firstly and run again: ")

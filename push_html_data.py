@@ -15,7 +15,7 @@ remove_keyword= str(os.getenv("Remove_Word"))
 change_from = str(os.getenv("Change_parameter1"))
 change_to = str(os.getenv("Change_parameter2"))
 
-csvfilepath = 'country_name.csv'
+csvfilepath = './country_name.csv'
 # local container for country name and description
 country_isocode_description = []
 

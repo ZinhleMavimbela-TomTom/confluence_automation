@@ -14,7 +14,8 @@ version =str(os.getenv("version"))
 remove_keyword= str(os.getenv("Remove_Word"))
 change_from = str(os.getenv("Change_parameter1"))
 change_to = str(os.getenv("Change_parameter2"))
-
+space_name=str(os.getenv("space"))
+title_name=str(os.getenv("title"))
 csvfilepath = 'country_name.csv'
 # local container for country name and description
 country_isocode_description = []
@@ -69,8 +70,8 @@ def storage_con(data_ver, c_code, descript):
     )
     htmlstring = ""
     status=confluence.append_page(
-    page_id = confluence.get_page_id(space=str(os.getenv("space")), title=str(os.getenv("title"))),
-    title = str(os.getenv("title")), 
+    page_id = confluence.get_page_id(space=space_name, title=title_name),
+    title = title_name, 
     append_body =htmlstring +"<h5>{}</h5>{}".format(c_code,descript)
    
     )

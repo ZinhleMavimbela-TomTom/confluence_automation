@@ -14,7 +14,7 @@ version =str(os.getenv("version"))
 remove_keyword= str(os.getenv("Remove_Word"))
 change_from = str(os.getenv("Change_parameter1"))
 change_to = str(os.getenv("Change_parameter2"))
-space_name='~' + str(os.getenv("space"))
+space_name=str(os.getenv("space"))
 title_name=str(os.getenv("title"))
 csvfilepath = 'country_name.csv'
 # local container for country name and description

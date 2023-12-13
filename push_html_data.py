@@ -112,7 +112,7 @@ def pulling_data():
             data_source_version = ((title_string.text).split()[2])
 
             # country names have the h2 tag in the HTML file
-            country_name_tags = soup.find_all('h2')
+            country_name_tags = soup.find_all("h2", {"class": "CountryName"})
             country_names = []
             # remove extra spaces from the country names
             for c in country_name_tags:
@@ -121,7 +121,7 @@ def pulling_data():
                 country_names.append(sanitize)
 
             # descriptions have the ul tag in the HTML file
-            description_tags = soup.find_all('ul')
+            description_tags = soup.find_all("ul", {"class": "CountryRemark"})
             descriptions = []
             for d in description_tags:
                 result = d.find_all("li")
@@ -149,10 +149,6 @@ def pulling_data():
                     country_descrip.append(sanitize)
                 descriptions.append(country_descrip)
                 del country_descrip
-
-            # remove introduction and general from both country names and the descriptions
-            del country_names[:1]
-            del descriptions[:1]
 
             # find the ISO codes based on the country name
             iso_codes = []

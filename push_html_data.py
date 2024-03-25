@@ -149,7 +149,10 @@ def pulling_data():
                     country_descrip.append(sanitize)
                 descriptions.append(country_descrip)
                 del country_descrip
-
+             # in case, General is added as a country name
+            if country_names[0] == "General":
+                country_names = country_names[1:]
+                descriptions = descriptions[1:]
             # find the ISO codes based on the country name
             iso_codes = []
             for country_name in country_names:

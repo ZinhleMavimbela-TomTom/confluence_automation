@@ -131,8 +131,9 @@ def pulling_data():
                     sanitize = u''.join(li.findAll(text=True))
                     sanitize = re.sub(r"[\n\t]*", "", sanitize)
                     sanitize = re.sub(' +', " ", sanitize)
-                    sanitize =re.sub('\xa0',"",sanitize)
-                    sanitize =re.sub('&nbsp;',"",sanitize)
+                    sanitize =re.sub('\xa0',"", sanitize)
+                    sanitize =re.sub('&nbsp;',"", sanitize)
+                    sanitize = re.sub('&amp;', "and", sanitize)
                     if ((len(remove_keyword))!=0):
                         split_remove =remove_keyword.split(",")
                         for i in range(len(split_remove)):

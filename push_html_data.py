@@ -64,6 +64,7 @@ def region_convert():
         return "Korea"
     
 def format_html_body(c_code, descript):
+    global htmlstring 
     htmlstring = htmlstring +"<h5>{}</h5>{}".format(c_code,descript)
 
 # function to match the country name with the ISO code from the country_names csv file

@@ -8,6 +8,8 @@ from cgitb import html
 from atlassian import Confluence
 import mysql.connector
 import json
+import requests
+from requests.auth import HTTPBasicAuth
 
 region =str(os.getenv("regions"))
 version =str(os.getenv("version"))
@@ -22,6 +24,8 @@ country_isocode_description = []
 
 # list to store unmatched country codes
 unmatched_countries = []
+
+htmlstring = ""
 
 # class CountryData is to hold the name, the ISO code, and the description of each country found in the HTML file
 class CountryData:
@@ -58,35 +62,9 @@ def region_convert():
         return "India"
     if region == "kor":
         return "Korea"
-
-def storage_con(data_ver, c_code, descript):
-    #region change to fullname
-    # Initialize the Confluence object for Confluence Cloud
-    confluence = Confluence(
-        url='https://tomtom.atlassian.net/wiki/',
-        #username=str(os.getenv("user_name")),  # Replace with your Atlassian email address
-        #password=str(os.getenv("access_token"))
-        token=str(os.getenv("access_token"))
-    )
-    # Get the page ID using the space name and title
-    page_id = confluence.get_page_id(space=space_name, title=title_name)
     
-    # Check if the page ID was found
-    if page_id:
-        # Append the content to the page
-        status = confluence.append_page(
-            page_id=page_id,
-            title=title_name,
-            append_body=htmlstring
-        )
-    
-        # Check the status of the operation
-        if status:
-            print("Content appended successfully!")
-        else:
-            print("Failed to append content.")
-    else:
-        print(status)
+def format_html_body(c_code, descript):
+    htmlstring = htmlstring +"<h5>{}</h5>{}".format(c_code,descript)
 
 # function to match the country name with the ISO code from the country_names csv file
 def matching_country_code(name):
@@ -192,7 +170,7 @@ def print_all():
         print("__________________________________________________________________________________________________________________________________")
         print(entry.name, "(", entry.code, ")-", entry.data_ver, "\n", entry.description)
 
-def pushing_data():
+def preparing_data():
     count=0
     for country in country_isocode_description:
         one_country_description_as_string = ""
@@ -206,19 +184,56 @@ def pushing_data():
             country.name ="<h3>"+assign_region+"</h3><br></br>"+"<h5>"+country.name+"</h5>"
         #print to check what is being sent to confluence
         print(country.data_ver + " " + country.name + " " + one_country_description_as_string)
-        storage_con(country.data_ver, country.name, one_country_description_as_string)
+        format_html_body(country.name, one_country_description_as_string)
         count=count+1
         one_country_description_as_string = ""
+
+def pushing_data():
+    #region change to fullname
+    url = "https://tomtom.atlassian.net/wiki/api/v2/pages/217024057"
+    
+    auth = HTTPBasicAuth(
+    str(os.getenv("user_name")), 
+    str(os.getenv("access_token")))    
+    
+    headers = {
+    "Accept": "application/json",
+    "Content-Type": "application/json"
+    }
+    
+    payload = json.dumps({
+    "id": "217024057",
+    "status": "current",
+    "title": str(os.getenv("space")),
+    "body": {
+        "representation": "wiki",
+        "value": "Hello World"
+    },
+    "version": {
+        "number": 1479,
+        "message": htmlstring
+    }
+    })
+    
+    response = requests.request(
+        "PUT",
+        url,
+        data=payload,
+        headers=headers,
+        auth=auth
+    )
+    
+    print(json.dumps(json.loads(response.text), sort_keys=True, indent=4, separators=(",", ": ")))
 
 pulling_data()
 print("Total Country Count: ", len(country_isocode_description))
 print_all()
 if (len(unmatched_countries) == 0):
     print("Pushing to Confluence Page")
+    preparing_data()
     pushing_data()
+    
 else:
     print("ERROR: These countries have no match in the csv file, please update csv file firstly and run again: ")
     for unmatch in unmatched_countries:
         print(unmatch)
-        
-print_all()

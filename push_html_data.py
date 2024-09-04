@@ -189,25 +189,25 @@ def preparing_data():
         count=count+1
         one_country_description_as_string = ""
 
-def get_version_number(url, auth):
+def get_previous_page_value_and_body(auth, url): 
     headers = {
         "Accept": "application/json"
     }
     
     response = requests.request(
         "GET",
-        url,
+        url + "?body-format=storage",
         headers=headers,
-        auth=auth
+        auth=auth,
     )
     
     output = json.loads(response.text)
-    return output.get("version").get("number") + 1
+    return output.get("body").get("storage").get("value"), output.get("version").get("number") + 1
 
 def pushing_data():
-    global htmlstring 
+    global htmlstring
     #region change to fullname
-    url = "https://tomtom.atlassian.net/wiki/api/v2/pages/217024057"
+    url = "https://tomtom.atlassian.net/wiki/api/v2/pages/" + str(os.getenv("page_id"))
     
     auth = HTTPBasicAuth(
     str(os.getenv("user_name")), 
@@ -218,7 +218,7 @@ def pushing_data():
     "Content-Type": "application/json"
     }
     
-    version_number = get_version_number(url, auth)
+    previous_page_body, version_number = get_previous_page_value_and_body(auth, url)
     
     payload = json.dumps({
     "id": str(os.getenv("page_id")),
@@ -226,7 +226,7 @@ def pushing_data():
     "title": str(os.getenv("space")),
     "body": {
         "representation": "storage",
-        "value": htmlstring
+        "value": previous_page_body + htmlstring
     },
     "version": {
         "number": version_number,

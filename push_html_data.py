@@ -189,7 +189,7 @@ def preparing_data():
         count=count+1
         one_country_description_as_string = ""
 
-def get_previous_page_value_and_body(auth, url): 
+def get_previous_page_body_and_value(auth, url): 
     headers = {
         "Accept": "application/json"
     }
@@ -218,7 +218,7 @@ def pushing_data():
     "Content-Type": "application/json"
     }
     
-    previous_page_body, version_number = get_previous_page_value_and_body(auth, url)
+    previous_page_body, version_number = get_previous_page_body_and_value(auth, url)
     
     payload = json.dumps({
     "id": str(os.getenv("page_id")),

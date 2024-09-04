@@ -61,18 +61,30 @@ def region_convert():
 
 def storage_con(data_ver, c_code, descript):
     #region change to fullname
-    
-    # connection to confluence credentials
-    confluence = Confluence(
-    url = 'https://tomtom.atlassian.net/wiki/',
-    token = str(os.getenv("access_token")))
-    htmlstring = ""
-    status=confluence.append_page(
-    page_id = confluence.get_page_id(space=space_name, title=title_name),
-    title = title_name, 
-    append_body =htmlstring +"<h5>{}</h5>{}".format(c_code,descript)
-   
+    # Initialize the Confluence object for Confluence Cloud
+confluence = Confluence(
+    url='https://tomtom.atlassian.net/wiki/',
+    username=str(os.getenv("user_name"))),  # Replace with your Atlassian email address
+    password=str(os.getenv("access_token")))
+)
+# Get the page ID using the space name and title
+page_id = confluence.get_page_id(space=space_name, title=title_name)
+
+# Check if the page ID was found
+if page_id:
+    # Append the content to the page
+    status = confluence.append_page(
+        page_id=page_id,
+        title=title_name,
+        append_body=htmlstring
     )
+
+    # Check the status of the operation
+    if status:
+        print("Content appended successfully!")
+    else:
+        print("Failed to append content.")
+else:
     print(status)
 
 # function to match the country name with the ISO code from the country_names csv file

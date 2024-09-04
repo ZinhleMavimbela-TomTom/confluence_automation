@@ -190,6 +190,7 @@ def preparing_data():
         one_country_description_as_string = ""
 
 def pushing_data():
+    global htmlstring 
     #region change to fullname
     url = "https://tomtom.atlassian.net/wiki/api/v2/pages/217024057"
     
@@ -208,11 +209,11 @@ def pushing_data():
     "title": str(os.getenv("space")),
     "body": {
         "representation": "wiki",
-        "value": "Hello World"
+        "value": htmlstring
     },
     "version": {
-        "number": 1479,
-        "message": htmlstring
+        "number": 1480,
+        "message": "update"
     }
     })
     

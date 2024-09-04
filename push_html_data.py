@@ -208,11 +208,11 @@ def pushing_data():
     "status": "current",
     "title": str(os.getenv("space")),
     "body": {
-        "representation": "wiki",
+        "representation": "storage",
         "value": htmlstring
     },
     "version": {
-        "number": 1480,
+        "number": 1481,
         "message": "update"
     }
     })

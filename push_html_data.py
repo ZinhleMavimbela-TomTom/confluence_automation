@@ -189,6 +189,21 @@ def preparing_data():
         count=count+1
         one_country_description_as_string = ""
 
+def get_version_number(url, auth):
+    headers = {
+        "Accept": "application/json"
+    }
+    
+    response = requests.request(
+        "GET",
+        url,
+        headers=headers,
+        auth=auth
+    )
+    
+    output = json.loads(response.text)
+    return output.get("version").get("number") + 1
+
 def pushing_data():
     global htmlstring 
     #region change to fullname
@@ -203,8 +218,10 @@ def pushing_data():
     "Content-Type": "application/json"
     }
     
+    version_number = get_version_number(url, auth)
+    
     payload = json.dumps({
-    "id": "217024057",
+    "id": str(os.getenv("page_id")),
     "status": "current",
     "title": str(os.getenv("space")),
     "body": {
@@ -212,7 +229,7 @@ def pushing_data():
         "value": htmlstring
     },
     "version": {
-        "number": 1482,
+        "number": version_number,
         "message": "update"
     }
     })

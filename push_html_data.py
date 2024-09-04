@@ -64,7 +64,7 @@ def storage_con(data_ver, c_code, descript):
     
     # connection to confluence credentials
     confluence = Confluence(
-    url = 'https://confluence.tomtomgroup.com/',
+    url = 'https://tomtom.atlassian.net/wiki/',
     token = str(os.getenv("access_token")))
     htmlstring = ""
     status=confluence.append_page(

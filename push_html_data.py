@@ -64,8 +64,9 @@ def storage_con(data_ver, c_code, descript):
     # Initialize the Confluence object for Confluence Cloud
     confluence = Confluence(
         url='https://tomtom.atlassian.net/wiki/',
-        username=str(os.getenv("user_name")),  # Replace with your Atlassian email address
-        password=str(os.getenv("access_token"))
+        #username=str(os.getenv("user_name")),  # Replace with your Atlassian email address
+        #password=str(os.getenv("access_token"))
+        token=str(os.getenv("access_token"))
     )
     # Get the page ID using the space name and title
     page_id = confluence.get_page_id(space=space_name, title=title_name)

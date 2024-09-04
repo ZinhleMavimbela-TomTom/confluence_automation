@@ -212,7 +212,7 @@ def pushing_data():
         "value": htmlstring
     },
     "version": {
-        "number": 1481,
+        "number": 1482,
         "message": "update"
     }
     })
